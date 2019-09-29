@@ -1,4 +1,5 @@
-import os
+import sys
+sys.path.append("/opt/Scattershot/libs/kaggle-rsna-2019")
 from kaggle_lib.pytorch.datacatalog import get_dataset, dataset_map, datacatalog, get_csv_file
 from torch.utils.data import DataLoader
 from kaggle_lib.pytorch.get_model import get_model
