@@ -240,16 +240,24 @@ class ClassifierTrainer(object):
         else:
             val_filter_params = {}
 
-        train_dataset = get_dataset(train_catalog, self.data_root, transforms=self.train_transforms,
-                                    preprocessing=get_preprocessing(self.model_preprocessing),
-                                    img_ids=train_img_ids, class_order=self.classes,
-                                    **filter_params)
+        """
+        train_dataset = []
+        num_train_datasets = 100
+
+
+        for ind in range(num_train_datasets):
+
+            train_dataset = get_dataset(train_catalog, self.data_root, transforms=self.train_transforms,
+                                        preprocessing=get_preprocessing(self.model_preprocessing),
+                                        img_ids=train_img_ids, class_order=self.classes,
+                                        **filter_params)
+        """
         val_dataset = get_dataset(val_catalog, self.data_root, transforms=self.val_transforms,
                                   preprocessing=get_preprocessing(self.model_preprocessing),
                                   img_ids=val_img_ids, class_order=self.classes,
                                   **val_filter_params)
 
-        logger.info("Num Images, train: %d, val: %d", len(train_dataset), len(val_dataset))
+        logger.info("Num Images, train: %d, val: %d", train_img_ids, len(val_dataset))
 
         with open(os.path.join(self.workdir, 'training_images.yml'), 'w') as f:
             print(yaml.safe_dump({'train': list(train_dataset.ids.values()),
