@@ -51,7 +51,7 @@ def test(h='lambda2', ds='rsna2019-stage1',
     if use_dataloader:
         dl = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
                         pin_memory=pin_memory)
-        tbar = tqdm.tqdm(dl, desc=h + '-' + ds + '-withloader-len{}'.format(len(train_dataset)))
+        tbar = tqdm.tqdm(dl, desc=h + '-' + ds + '-withloader-len{}-nworkers{}'.format(len(train_dataset), num_workers))
         for i, x in enumerate(tbar):
             s = ', '.join('{}=avg:{},t:{}'.format(name, t.average_time_str, t.total_time_str) for name, t in
                           dl.dataset.timers.items())
@@ -75,13 +75,13 @@ def test(h='lambda2', ds='rsna2019-stage1',
 
 #slow
 for limit in [674258, 168564, 42141, 10535, 2633]:
-    test(use_dataloader=True, small=False, N=2, limit=limit)
+    test(use_dataloader=False, small=False, N=2, limit=limit, num_workers=4)
     print()
     print()
 
 #fast
 for limit in [674258, 168564, 42141, 10535, 2633]:
-    test(use_dataloader=True, small=True, N=2)
+    test(use_dataloader=False, small=True, N=2)
     print()
     print()
 # test(use_dataloader=False, small=False)
