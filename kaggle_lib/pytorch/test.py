@@ -55,6 +55,8 @@ def test(h='lambda2', ds='rsna2019-stage1',
         for i, x in enumerate(tbar):
             s = ', '.join('{}=avg:{},t:{}'.format(name, t.average_time_str, t.total_time_str) for name, t in
                           dl.dataset.timers.items())
+            print(i)
+            print(s)
             tbar.set_postfix_str(s)
             if i > N:
                 break
