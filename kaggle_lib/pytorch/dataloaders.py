@@ -1,7 +1,7 @@
 from __future__ import absolute_import, print_function
 
 from joblib import Parallel, delayed
-import torch
+from torch.utils.data._utils.collate import default_collate
 import random
 
 class CustomDataLoader(object):
@@ -34,7 +34,7 @@ class CustomDataLoader(object):
             batch_data = Parallel(n_jobs=self.num_workers, backend=self.backend)(delayed(self.dataset.__getitem__)(x)
                                                                                  for x in batch)
             self.curr_i = self.curr_i + self.batch_size
-            return  torch.stack(batch_data)
+            return default_collate(batch_data)
 
     def reset(self):
         self.curr_i = 0
