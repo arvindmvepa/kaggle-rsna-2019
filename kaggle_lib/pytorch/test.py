@@ -4,13 +4,22 @@ from kaggle_lib.pytorch.datacatalog import get_dataset, dataset_map, datacatalog
 from torch.utils.data import DataLoader
 from kaggle_lib.pytorch.get_model import get_model
 from kaggle_lib.pytorch.augmentation import get_preprocessing
+from joblib import Parallel, delayed
 
 import albumentations as A
 import json
 
 
+def run_batch(i, batch_size, train_dataset):
+    nimages = len(train_dataset)
+    batcher = list(range(nimages))
+    batch = batcher[i * batch_size:(i + 1) * batch_size]
+    for x in batch:
+        train_dataset[x]
+
+
 def test(h='lambda2', ds='rsna2019-stage1',
-         batch_size=32, shuffle=True, pin_memory=False, small=True, N = 15, use_dataloader=True,
+         batch_size=32, shuffle=True, pin_memory=False, small=True, N = 15, use_dataloader=True, use_joblib=False,
          num_workers=0,
          use_transforms=True,
          limit=None):
@@ -61,6 +70,13 @@ def test(h='lambda2', ds='rsna2019-stage1',
             if i > N:
                 break
         tbar.close()
+
+    elif use_joblib:
+        tbar = tqdm.tqdm(list(range(N)), desc=h + '-' + ds + '-joblib-len{}-nworkers{}'.format(len(train_dataset,
+                                                                                                   num_workers)))
+        Parallel(n_jobs=num_workers)(delayed(run_batch)(i, batch_size, train_dataset) for i in tbar)
+        tbar.close()
+
     else:
         tbar = tqdm.tqdm(list(range(N)), desc=h + '-' + ds + '-noloader-len{}'.format(len(train_dataset)))
         nimages = len(train_dataset)
@@ -78,7 +94,7 @@ def test(h='lambda2', ds='rsna2019-stage1',
 #slow
 #for limit in [674258, 168564, 42141, 10535, 2633]:
 for limit in [479]:
-    test(use_dataloader=True, small=False, N=2, limit=limit, num_workers=4)
+    test(use_dataloader=False, use_joblib=True, small=False, N=2, limit=limit, num_workers=4)
     print()
     print()
 
