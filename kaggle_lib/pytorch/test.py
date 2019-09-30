@@ -76,14 +76,15 @@ def test(h='lambda2', ds='rsna2019-stage1',
         tbar.close()
 
 #slow
-for limit in [674258, 168564, 42141, 10535, 2633]:
+#for limit in [674258, 168564, 42141, 10535, 2633]:
+for limit in [479]:
     test(use_dataloader=True, small=False, N=2, limit=limit, num_workers=4)
     print()
     print()
 
 #fast
-for limit in [674258, 168564, 42141, 10535, 2633]:
-    test(use_dataloader=True, small=True, N=2, num_workers=4)
-    print()
-    print()
+#for limit in [674258, 168564, 42141, 10535, 2633]:
+test(use_dataloader=True, small=True, N=2, num_workers=4)
+print()
+print()
 # test(use_dataloader=False, small=False)
