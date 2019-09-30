@@ -26,7 +26,7 @@ class CustomDataLoader(object):
     def __next__(self):
         """
         """
-        if self.curr_i >= self.len(self.dataset):
+        if self.curr_i >= len(self.dataset):
             self.reset()
             raise StopIteration
         else:
