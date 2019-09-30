@@ -100,7 +100,7 @@ def test(h='lambda2', ds='rsna2019-stage1',
 #slow
 #for limit in [674258, 168564, 42141, 10535, 2633]:
 for limit in [479, None]:
-    test(use_dataloader=False, use_joblib=True, joblib_backend='multiprocessing', small=False, N=10, limit=limit,
+    test(use_dataloader=False, use_joblib=True, joblib_backend='threading', small=False, N=10, limit=limit,
          num_workers=4)
     print()
     print()
