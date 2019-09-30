@@ -8,7 +8,7 @@ from joblib import Parallel, delayed
 
 import albumentations as A
 import json
-from .utils import Timer
+from kaggle_lib.pytorch.utils import Timer
 
 def run_batch(i, batch_size, train_dataset):
     nimages = len(train_dataset)
