@@ -58,6 +58,14 @@ class Timer(object):
         return hms_string(seconds)
 
     @property
+    def total_time_str(self):
+        return "{:.4f}".format(self.total_time)
+
+    @property
+    def average_time_str(self):
+        return "{:.4f}".format(self.average_time)
+
+    @property
     def elapsed_time(self):
         if self.start_time is None:
             return -1
