@@ -20,6 +20,7 @@ def run_batch(i, batch_size, train_dataset):
 
 def test(h='lambda2', ds='rsna2019-stage1',
          batch_size=32, shuffle=True, pin_memory=False, small=True, N = 15, use_dataloader=True, use_joblib=False,
+         joblib_backend='loky',
          num_workers=0,
          use_transforms=True,
          limit=None):
@@ -75,7 +76,8 @@ def test(h='lambda2', ds='rsna2019-stage1',
     elif use_joblib:
         tbar = tqdm.tqdm(list(range(N)), desc=h + '-' + ds + '-joblib-len{}-nworkers{}'.format(len(train_dataset),
                                                                                                    num_workers))
-        Parallel(n_jobs=num_workers)(delayed(run_batch)(i, batch_size, train_dataset) for i in tbar)
+        Parallel(n_jobs=num_workers, backend=joblib_backend)(delayed(run_batch)(i, batch_size, train_dataset)
+                                                             for i in tbar)
         tbar.close()
 
     else:
@@ -97,14 +99,15 @@ def test(h='lambda2', ds='rsna2019-stage1',
 
 #slow
 #for limit in [674258, 168564, 42141, 10535, 2633]:
-for limit in [479]:
-    test(use_dataloader=False, use_joblib=True, small=False, N=10, limit=limit, num_workers=4)
+for limit in [479, None]:
+    test(use_dataloader=False, use_joblib=True, joblib_backend='multiprocessing', small=False, N=10, limit=limit,
+         num_workers=4)
     print()
     print()
 
 #fast
 #for limit in [674258, 168564, 42141, 10535, 2633]:
-test(use_dataloader=False, use_joblib=True, small=True, N=10, num_workers=4)
-print()
-print()
+#test(use_dataloader=False, use_joblib=True, small=True, N=10, num_workers=4)
+#print()
+#print()
 # test(use_dataloader=False, small=False)
