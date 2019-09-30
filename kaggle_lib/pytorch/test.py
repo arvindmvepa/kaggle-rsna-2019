@@ -8,7 +8,7 @@ from joblib import Parallel, delayed
 
 import albumentations as A
 import json
-
+from .utils import Timer
 
 def run_batch(i, batch_size, train_dataset):
     nimages = len(train_dataset)
@@ -52,11 +52,12 @@ def test(h='lambda2', ds='rsna2019-stage1',
 
     train_c =  datacatalog[dataset_map[ds]['train']]
     train_dataset = get_dataset(train_c, '/data', transforms=transforms,
-                                preprocessing=get_preprocessing(model_preprocessing), debug=True, img_ids=img_ids,
+                                preprocessing=get_preprocessing(model_preprocessing), debug=False, img_ids=img_ids,
                                 limit=limit)
 
     import tqdm
-
+    timer = Timer()
+    timer.tic()
     if use_dataloader:
         dl = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
                         pin_memory=pin_memory)
@@ -90,17 +91,20 @@ def test(h='lambda2', ds='rsna2019-stage1',
                           train_dataset.timers.items())
             tbar.set_postfix_str(s)
         tbar.close()
+    timer.toc()
+
+    print("Total Time: {}".format(timer.total_time_str))
 
 #slow
 #for limit in [674258, 168564, 42141, 10535, 2633]:
 for limit in [479]:
-    test(use_dataloader=False, use_joblib=True, small=False, N=2, limit=limit, num_workers=4)
+    test(use_dataloader=True, use_joblib=True, small=False, N=2, limit=limit, num_workers=4)
     print()
     print()
 
 #fast
 #for limit in [674258, 168564, 42141, 10535, 2633]:
-test(use_dataloader=False, use_joblib=True, small=True, N=2, num_workers=4)
+test(use_dataloader=True, use_joblib=True, small=True, N=2, num_workers=4)
 print()
 print()
 # test(use_dataloader=False, small=False)
