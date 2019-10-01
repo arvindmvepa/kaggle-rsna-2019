@@ -114,35 +114,19 @@ class RSNA2019Dataset(VisionDataset):
         """
         Args:
             index (int): Index
-
         Returns:
             tuple: Tuple (image, target). target is a list of captions for the image.
         """
-        self.timers['get/get_id'].tic()
         img_id = self.ids[index]
-        # img_id = self.id
-        self.timers['get/get_id'].toc()
-
-        self.timers['get/get_row'].tic()
-        image_row = self.data[img_id]
-        self.timers['get/get_row'].toc()
-
-        self.timers['get/get_path'].tic()
-        path = image_row['fullpath']
-        # path = self.path
+        image_row = self.data.loc[img_id].to_dict()
+        path = image_row['filepath']
         path = os.path.splitext(path)[0] + '.' + self.image_ext
-        self.timers['get/get_path'].toc()
-        self.timers['get/read_image'].tic()
-        img = self.read_image(path)
-        # img = self.h5_read_image(path)
-        self.timers['get/read_image'].toc()
 
-        self.timers['get/get_target'].tic()
-        target = [(image_row['label__' + self.label_map[c]]) for c in self.class_order]
-
-        self.timers['get/get_target'].toc()
-
-        self.timers['get/augmentation'].tic()
+        img = self.read_image(os.path.join(self.root, path))
+        try:
+            target = [(image_row['label__' + self.label_map[c]]) for c in self.class_order]
+        except KeyError:
+            target = None
 
         output = dict(image=img)
         if self.transforms is not None:
@@ -150,25 +134,16 @@ class RSNA2019Dataset(VisionDataset):
                 output = self.transforms(**output)
             else:
                 raise NotImplementedError('Not implemented yet, must be albumentation based transform')
-        self.timers['get/augmentation'].toc()
 
-        self.timers['get/preprocessing'].tic()
         if self.preprocessing:
             if target is not None:
                 target = torch.tensor(target).float()
             output = self.preprocessing(**output)
-        self.timers['get/preprocessing'].toc()
 
-        self.timers['get/finish'].tic()
         output['index'] = index
         output['image_id'] = img_id
         if target is not None:
             output['target'] = target
-        self.timers['get/finish'].toc()
-
-        if self.debug:
-            for name, t in self.timers.items():
-                print(name, t.average_time_str, t.total_time_str)
 
         return output
 
