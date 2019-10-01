@@ -25,6 +25,7 @@ class CustomDataLoader(object):
         self.batcher = list(self.dataset.ids.keys())
         print("dataset ids first {}, last {}".format(self.batcher[0], self.batcher[len(self.batcher)-1]))
         self.batch_size = batch_size
+        self.chunk_size = self.batch_size // self.num_workers
         self.reset()
 
         self.num_workers = num_workers
@@ -43,9 +44,8 @@ class CustomDataLoader(object):
             self.reset()
             raise StopIteration
         else:
-            chunk_size = self.batch_size // self.num_workers
-            batch = self.batcher[self.curr_i * self.batch_size:(self.curr_i + 1) * self.batch_size]
-            batch_chunks = [batch[i*chunk_size:(i+1)*chunk_size] for i in range(self.num_workers)]
+            batch_indices = self.batcher[self.curr_i * self.batch_size:(self.curr_i + 1) * self.batch_size]
+            batch_chunks = [batch_indices[j*self.chunk_size:(j+1)*self.chunk_size] for j in range(self.num_workers)]
             dl_get_batch0 = time.time()
             batch_data = Parallel(n_jobs=self.num_workers, backend=self.backend)(delayed(get_ds_data)(chunk, self.dataset)
                                                                                  for chunk in batch_chunks)
