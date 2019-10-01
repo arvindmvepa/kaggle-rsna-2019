@@ -1,7 +1,7 @@
 from __future__ import absolute_import, print_function
 
 import os
-from collections import defaultdict
+
 import h5py
 import numpy as np
 import pandas as pd
@@ -12,7 +12,7 @@ from torchvision.datasets.vision import VisionDataset
 import random
 
 from ..dicom import sitk_read_image
-from .utils import Timer
+
 
 def h5_read_image(fn):
     with h5py.File(fn, 'r') as f:
@@ -40,10 +40,9 @@ class RSNA2019Dataset(VisionDataset):
     def __init__(self, root, csv_file, transform=None, target_transform=None, transforms=None,
                  convert_rgb=True, preprocessing=None, img_ids=None,
                  reader='h5',
-                 class_order=('sdh', 'sah', 'ivh', 'iph', 'edh', 'any'), debug=False,
+                 class_order=('sdh', 'sah', 'ivh', 'iph', 'edh', 'any'),
                  limit=None,
                  **filter_params):
-
         super(RSNA2019Dataset, self).__init__(root, transforms, transform, target_transform)
 
         self.data = pd.read_csv(csv_file).set_index('ImageId')
@@ -71,13 +70,6 @@ class RSNA2019Dataset(VisionDataset):
     def apply_filter(self, img_ids, **filter_params):
         # place holder for now
         return img_ids
-
-    def h5_read_image(self, fn):
-        self.timers['actual_read'].tic()
-        with h5py.File(fn, 'r') as f:
-            array = np.array(f['data']).astype('float32')
-        self.timers['actual_read'].toc()
-        return array
 
     def __getitem__(self, index):
         """
