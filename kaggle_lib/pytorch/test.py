@@ -3,6 +3,7 @@ sys.path.append("/opt/Scattershot/libs/kaggle-rsna-2019")
 from kaggle_lib.pytorch.datacatalog import get_dataset, dataset_map, datacatalog, get_csv_file
 from torch.utils.data import DataLoader
 from kaggle_lib.pytorch.get_model import get_model
+from kaggle_lib.pytorch.dataloaders import CustomDataLoader
 from kaggle_lib.pytorch.augmentation import get_preprocessing
 from joblib import Parallel, delayed
 
@@ -19,7 +20,8 @@ def run_batch(i, batch_size, train_dataset):
 
 
 def test(h='lambda2', ds='rsna2019-stage1',
-         batch_size=32, shuffle=True, pin_memory=False, small=True, N = 15, use_dataloader=True, use_joblib=False,
+         batch_size=32, shuffle=True, pin_memory=False, small=True, N = 15, use_dataloader=True, use_jdataloader=False,
+         use_joblib=False,
          joblib_backend='loky',
          num_workers=0,
          use_transforms=True,
@@ -73,6 +75,16 @@ def test(h='lambda2', ds='rsna2019-stage1',
                 break
         tbar.close()
 
+    elif use_jdataloader:
+        dl = CustomDataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
+                              pin_memory=pin_memory)
+        tbar = tqdm.tqdm(dl, desc=h + '-' + ds + '-withjloader-len{}-nworkers{}'.format(len(train_dataset), num_workers))
+        for i, x in enumerate(tbar):
+            print("index: {}".format(i))
+            if i > N:
+                break
+        tbar.close()
+
     elif use_joblib:
         tbar = tqdm.tqdm(list(range(N)), desc=h + '-' + ds + '-joblib-len{}-nworkers{}'.format(len(train_dataset),
                                                                                                    num_workers))
@@ -99,8 +111,8 @@ def test(h='lambda2', ds='rsna2019-stage1',
 
 #slow
 #for limit in [674258, 168564, 42141, 10535, 2633]:
-for limit in [479, None]:
-    test(use_dataloader=True, use_joblib=False, joblib_backend='multiprocessing', small=False, N=10, limit=limit,
+#for limit in [479, None]:
+    test(use_dataloader=False, use_joblib=True, joblib_backend='multiprocessing', small=False, N=10, limit=limit,
          num_workers=4)
     print()
     print()
