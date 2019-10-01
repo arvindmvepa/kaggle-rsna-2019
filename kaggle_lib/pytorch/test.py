@@ -66,7 +66,7 @@ def test(h='lambda2', ds='rsna2019-stage1',
     if use_dataloader:
         dl = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
                         pin_memory=pin_memory)
-        tbar = tqdm.tqdm(dl, desc=h + '-' + ds + '-withloader-len{}-nworkers{}'.format(len(train_dataset), num_workers))
+        tbar = tqdm.tqdm(dl, desc=h + '-' + ds + '-withloader-len{}-nworkers{}-bs{}'.format(len(train_dataset), num_workers, batch_size))
         for i, x in enumerate(tbar):
             s = ', '.join('{}=avg:{},t:{}'.format(name, t.average_time_str, t.total_time_str) for name, t in
                           dl.dataset.timers.items())
@@ -79,7 +79,7 @@ def test(h='lambda2', ds='rsna2019-stage1',
     elif use_jdataloader:
         dl = CustomDataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
                               pin_memory=pin_memory)
-        tbar = tqdm.tqdm(dl, desc=h + '-' + ds + '-withjloader-len{}-nworkers{}'.format(len(train_dataset), num_workers))
+        tbar = tqdm.tqdm(dl, desc=h + '-' + ds + '-withjloader-len{}-nworkers{}-bs{}'.format(len(train_dataset), num_workers, batch_size))
         for i, x in enumerate(tbar):
             print("index: {}".format(i))
             cur = time.time()
@@ -88,8 +88,8 @@ def test(h='lambda2', ds='rsna2019-stage1',
                 break
         tbar.close()
     elif use_joblib:
-        tbar = tqdm.tqdm(list(range(N)), desc=h + '-' + ds + '-joblib-len{}-nworkers{}'.format(len(train_dataset),
-                                                                                                   num_workers))
+        tbar = tqdm.tqdm(list(range(N)), desc=h + '-' + ds + '-joblib-len{}-nworkers{}-bs{}'.format(len(train_dataset),
+                                                                                                   num_workers, batch_size))
         Parallel(n_jobs=num_workers, backend=joblib_backend)(delayed(run_batch)(i, batch_size, train_dataset)
                                                              for i in tbar)
         tbar.close()
@@ -118,8 +118,8 @@ for limit in [2500, 2500, 2500, 2500, 2500]:
     print()
 """
 
-for num_workers, batch_size, limit in [(1,128,100000), (1,128,100000), (2,128,100000), (2,128,100000),
-                                       (4,128,100000), (4,128,100000)]:
+for num_workers, batch_size, limit in [(1,128,None), (1,128,None), (2,128,None), (2,128,None),
+                                       (4,128,None), (4,128,None)]:
     test(use_jdataloader=True, use_dataloader=False, use_joblib=False, small=False, N=10, limit=limit,
          batch_size=batch_size, num_workers=num_workers)
     print()
