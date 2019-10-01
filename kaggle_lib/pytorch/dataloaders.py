@@ -38,7 +38,7 @@ class CustomDataLoader(object):
         """
         dl_next0 = time.time()
 
-        if self.curr_i >= len(self.dataset):
+        if self.curr_i >= (len(self.dataset)-1):
             self.reset()
             raise StopIteration
         else:
