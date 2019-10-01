@@ -76,7 +76,7 @@ def test(h='lambda2', ds='rsna2019-stage1',
         tbar.close()
     elif use_jdataloader:
         dl = CustomDataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
-                              pin_memory=pin_memory)
+                              pin_memory=pin_memory, backend=joblib_backend)
         tbar = tqdm.tqdm(dl, desc=h + '-' + ds + '-withjloader-len{}-nworkers{}-bs{}'.format(len(train_dataset), num_workers, batch_size))
         for i, x in enumerate(tbar):
             print("index: {}".format(i))
