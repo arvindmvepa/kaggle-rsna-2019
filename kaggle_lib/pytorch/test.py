@@ -65,8 +65,6 @@ def test(h='lambda2', ds='rsna2019-stage1',
         tbar = tqdm.tqdm(dl, desc=h + '-' + ds + '-withloader-len{}-nworkers{}'.format(len(train_dataset), num_workers))
         for i, x in enumerate(tbar):
             print("index: {}".format(i))
-            print("time string: {}".format(s))
-            tbar.set_postfix_str(s)
             if i > N:
                 break
         tbar.close()
@@ -76,8 +74,6 @@ def test(h='lambda2', ds='rsna2019-stage1',
         tbar = tqdm.tqdm(dl, desc=h + '-' + ds + '-withjloader-len{}-nworkers{}'.format(len(train_dataset), num_workers))
         for i, x in enumerate(tbar):
             print("index: {}".format(i))
-            print("time string: {}".format(s))
-            tbar.set_postfix_str(s)
             if i > N:
                 break
         tbar.close()
@@ -97,19 +93,17 @@ def test(h='lambda2', ds='rsna2019-stage1',
             batch = batcher[i*batch_size:(i + 1)*batch_size]
             for x in batch:
                 train_dataset[x]
-            tbar.set_postfix_str(s)
         tbar.close()
     end = time.time()
     print("Total Time: {}".format(end-beg))
 
-"""
 for limit in [674258, 2633]:
 #   for limit in [479, None]:
     test(use_dataloader=False, use_jdataloader=True, use_joblib=False, joblib_backend='multiprocessing', small=False, N=10, limit=limit,
          num_workers=8)
     print()
     print()
-"""
+
 for limit in [674258, 2633]:
 #   for limit in [479, None]:
     test(use_dataloader=True, small=False, N=10, limit=limit, num_workers=8)
