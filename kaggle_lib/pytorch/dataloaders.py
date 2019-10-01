@@ -8,6 +8,7 @@ import random
 stuff = dict()
 
 def get_ds_data(chunk):
+    global stuff
     output = []
     chunk_fetch_beg = time.time()
     for x in chunk:
@@ -21,6 +22,7 @@ class CustomDataLoader(object):
 
     def __init__(self, dataset, batch_size = 1, shuffle = False, num_workers = None, backend='loky', *args,
                  **kwargs):
+        global stuff
         super(CustomDataLoader, self).__init__()
         stuff["dataset"] = dataset
         self.dataset = dataset
