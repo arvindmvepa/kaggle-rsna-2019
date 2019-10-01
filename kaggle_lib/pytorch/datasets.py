@@ -62,6 +62,8 @@ class RSNA2019Dataset(VisionDataset):
         self.convert_rgb = convert_rgb
         self.preprocessing = preprocessing
 
+        self.data = self.data.loc[list(self.ids.values())]
+
         assert reader in readers, 'bad reader type'
 
         self.image_ext = reader
