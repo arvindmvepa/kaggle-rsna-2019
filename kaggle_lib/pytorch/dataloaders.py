@@ -8,8 +8,11 @@ import random
 
 def get_ds_data(chunk, dataset):
     output = []
+    chunk_fetch_beg = time.time()
     for x in chunk:
         output.append(dataset[x])
+    chunk_fetch_end = time.time()
+    print("time fetch chunk: {}".format(chunk_fetch_end - chunk_fetch_beg))
     return output
 
 
