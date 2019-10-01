@@ -6,6 +6,11 @@ import time
 import torch
 import random
 
+
+def get_ds_data(index, dataset):
+    return dataset[index]
+
+
 class CustomDataLoader(object):
 
     def __init__(self, dataset, batch_size = 1, shuffle = False, num_workers = None, backend='multiprocessing', *args,
@@ -36,7 +41,7 @@ class CustomDataLoader(object):
         else:
             batch = self.batcher[self.curr_i * self.batch_size:(self.curr_i + 1) * self.batch_size]
             dl_get_batch0 = time.time()
-            batch_data = Parallel(n_jobs=self.num_workers, backend=self.backend)(delayed(self.dataset.__getitem__)(x)
+            batch_data = Parallel(n_jobs=self.num_workers, backend=self.backend)(delayed(get_ds_data)(x, self.dataset)
                                                                                  for x in batch)
             dl_get_batch1 = time.time()
             print("time for get batch: {}".format(dl_get_batch1 - dl_get_batch0))
