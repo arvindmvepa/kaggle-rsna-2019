@@ -138,10 +138,8 @@ class RSNA2019Dataset(VisionDataset):
         self.timers['get/read_image'].toc()
 
         self.timers['get/get_target'].tic()
-        # try:
-        #     target = [(image_row['label__' + self.label_map[c]]) for c in self.class_order]
-        # except KeyError:
-        target = None
+        target = [(image_row['label__' + self.label_map[c]]) for c in self.class_order]
+
         self.timers['get/get_target'].toc()
 
         self.timers['get/augmentation'].tic()
