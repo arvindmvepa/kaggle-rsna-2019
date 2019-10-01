@@ -7,8 +7,11 @@ import torch
 import random
 
 
-def get_ds_data(index, dataset):
-    return dataset[index]
+def get_ds_data(chunk, dataset):
+    output = []
+    for x in chunk:
+        output.append(dataset[x])
+    return output
 
 
 class CustomDataLoader(object):
@@ -39,14 +42,17 @@ class CustomDataLoader(object):
             self.reset()
             raise StopIteration
         else:
+            chunk_size = self.batch_size // self.num_workers
             batch = self.batcher[self.curr_i * self.batch_size:(self.curr_i + 1) * self.batch_size]
+            batch_chunks = [batch[i*chunk_size:(i+1)*chunk_size] for i in range(self.num_workers)]
             dl_get_batch0 = time.time()
-            batch_data = Parallel(n_jobs=self.num_workers, backend=self.backend)(delayed(get_ds_data)(x, self.dataset)
-                                                                                 for x in batch)
+            batch_data = Parallel(n_jobs=self.num_workers, backend=self.backend)(delayed(get_ds_data)(chunk, self.dataset)
+                                                                                 for chunk in batch_chunks)
             dl_get_batch1 = time.time()
             print("time for get batch: {}".format(dl_get_batch1 - dl_get_batch0))
             self.curr_i = self.curr_i + self.batch_size
             dl_collate0 = time.time()
+            batch_data = [item for chunk in batch_data for item in chunk]
             batch_data_dict = {"image": torch.stack([data['image'] for data in batch_data], 0),
                                "target": torch.stack([data['target'] for data in batch_data], 0)}
             dl_collate1 = time.time()
