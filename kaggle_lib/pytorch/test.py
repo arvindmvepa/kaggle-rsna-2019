@@ -1,7 +1,7 @@
 import sys
 from kaggle_lib.pytorch.datacatalog import get_dataset, dataset_map, datacatalog, get_csv_file
 from torch.utils.data import DataLoader
-from .dataloaders import CustomDataLoader
+from kaggle_lib.pytorch.dataloaders import CustomDataLoader
 from kaggle_lib.pytorch.get_model import get_model
 from kaggle_lib.pytorch.augmentation import get_preprocessing
 from joblib import Parallel, delayed
