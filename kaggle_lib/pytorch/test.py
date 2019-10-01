@@ -117,7 +117,7 @@ for limit in [2500, 2500, 2500, 2500, 2500]:
 """
 
 for num_workers, batch_size, limit in [(2,32,300000), (2,32,300000), (4,32,300000), (8,32,300000)]:
-    test(use_jdataloader=True, use_dataloader=False, use_joblib=False, joblib_backend='multiprocessing',
+    test(use_jdataloader=True, use_dataloader=False, use_joblib=False, joblib_backend='loky',
          small=False, N=10, limit=limit, batch_size=batch_size, num_workers=num_workers)
     print()
     print()
