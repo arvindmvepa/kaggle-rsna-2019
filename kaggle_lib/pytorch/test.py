@@ -116,6 +116,12 @@ for limit in [674258, 168564, 42141, 10535, 2633]:
     print()
     print()
 
+for limit in [674258, 168564, 42141, 10535, 2633]:
+#   for limit in [479, None]:
+    test(use_dataloader=False, use_joblib=True, small=False, N=10, limit=limit, num_workers=8)
+    print()
+    print()
+
 #fast
 #for limit in [674258, 168564, 42141, 10535, 2633]:
 #test(use_dataloader=False, use_joblib=True, small=True, N=10, num_workers=4)
