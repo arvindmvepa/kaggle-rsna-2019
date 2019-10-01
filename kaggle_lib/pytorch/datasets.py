@@ -45,7 +45,7 @@ class RSNA2019Dataset(VisionDataset):
                  **filter_params):
         super(RSNA2019Dataset, self).__init__(root, transforms, transform, target_transform)
 
-        self.data = pd.read_csv(csv_file).set_index('ImageId')
+        data = pd.read_csv(csv_file).set_index('ImageId')
 
         assert all(c in self.label_map for c in class_order), "bad class order"
         self.class_order = class_order
@@ -55,15 +55,13 @@ class RSNA2019Dataset(VisionDataset):
             random.shuffle(img_ids)
             img_ids = img_ids[:limit]
         img_ids = self.apply_filter(img_ids, **filter_params)
-        self.ids = {i: imgid for i, imgid in enumerate(img_ids)}
-        self.rev_ids = {v: k for k, v in self.ids.items()}
+        data = data.loc[img_ids]
+        data = data.reset_index()
+        self.data = data[['filepath']]
+
         self.transforms_are_albumentation = isinstance(self.transforms, BaseCompose)
         self.convert_rgb = convert_rgb
         self.preprocessing = preprocessing
-
-        self.data = self.data.loc[list(self.ids.values())]
-        print(self.data.columns.values)
-        self.data = self.data[['filepath']]
 
         assert reader in readers, 'bad reader type'
 
@@ -81,8 +79,7 @@ class RSNA2019Dataset(VisionDataset):
         Returns:
             tuple: Tuple (image, target). target is a list of captions for the image.
         """
-        img_id = self.ids[index]
-        image_row = self.data.loc[img_id].to_dict()
+        image_row = self.data.loc[index].to_dict()
         path = image_row['filepath']
         path = os.path.splitext(path)[0] + '.' + self.image_ext
 
@@ -105,11 +102,11 @@ class RSNA2019Dataset(VisionDataset):
             output = self.preprocessing(**output)
 
         output['index'] = index
-        output['image_id'] = img_id
+        #output['image_id'] image_id
         if target is not None:
             output['target'] = target
 
         return output
 
     def __len__(self):
-        return len(self.ids)
+        return len(self.data.index)
