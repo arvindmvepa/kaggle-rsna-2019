@@ -10,12 +10,15 @@ import time
 import albumentations as A
 import json
 
-def run_batch(i, batch_size, train_dataset):
+def run_batch(i, batch_size, train_dataset, beg):
     nimages = len(train_dataset)
     batcher = list(range(nimages))
     batch = batcher[i * batch_size:(i + 1) * batch_size]
     for x in batch:
         train_dataset[x]
+    print("index : {}".format(i))
+    cur = time.time()
+    print("time: {}".format(cur - beg))
 
 
 def test(h='lambda2', ds='rsna2019-stage1',
@@ -59,12 +62,15 @@ def test(h='lambda2', ds='rsna2019-stage1',
 
     import tqdm
     beg = time.time()
+    print("time: 0")
     if use_dataloader:
         dl = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
                         pin_memory=pin_memory)
         tbar = tqdm.tqdm(dl, desc=h + '-' + ds + '-withloader-len{}-nworkers{}'.format(len(train_dataset), num_workers))
         for i, x in enumerate(tbar):
             print("index: {}".format(i))
+            cur = time.time()
+            print("time: {}".format(cur-beg))
             if i > N:
                 break
         tbar.close()
@@ -74,12 +80,14 @@ def test(h='lambda2', ds='rsna2019-stage1',
         tbar = tqdm.tqdm(dl, desc=h + '-' + ds + '-withjloader-len{}-nworkers{}'.format(len(train_dataset), num_workers))
         for i, x in enumerate(tbar):
             print("index: {}".format(i))
+            cur = time.time()
+            print("time: {}".format(cur-beg))
             if i > N:
                 break
         tbar.close()
     elif use_joblib:
         tbar = tqdm.tqdm(list(range(N)), desc=h + '-' + ds + '-joblib-len{}-nworkers{}'.format(len(train_dataset),
-                                                                                                   num_workers))
+                                                                                                   num_workers, beg))
         Parallel(n_jobs=num_workers, backend=joblib_backend)(delayed(run_batch)(i, batch_size, train_dataset)
                                                              for i in tbar)
         tbar.close()
