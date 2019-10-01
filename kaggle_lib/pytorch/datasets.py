@@ -9,6 +9,8 @@ import torch
 from albumentations.core.composition import BaseCompose
 from torchvision.datasets.vision import VisionDataset
 
+import random
+
 from ..dicom import sitk_read_image
 
 
@@ -39,6 +41,7 @@ class RSNA2019Dataset(VisionDataset):
                  convert_rgb=True, preprocessing=None, img_ids=None,
                  reader='h5',
                  class_order=('sdh', 'sah', 'ivh', 'iph', 'edh', 'any'),
+                 limit=None,
                  **filter_params):
         super(RSNA2019Dataset, self).__init__(root, transforms, transform, target_transform)
 
@@ -48,6 +51,9 @@ class RSNA2019Dataset(VisionDataset):
         self.class_order = class_order
 
         img_ids = img_ids or self.data.index.tolist()
+        if limit:
+            random.shuffle(img_ids)
+            img_ids = img_ids[:limit]
         img_ids = self.apply_filter(img_ids, **filter_params)
         self.ids = {i: imgid for i, imgid in enumerate(img_ids)}
         self.rev_ids = {v: k for k, v in self.ids.items()}
