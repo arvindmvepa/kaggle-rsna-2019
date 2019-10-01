@@ -38,7 +38,7 @@ class CustomDataLoader(object):
         """
         dl_next0 = time.time()
 
-        if self.curr_i >= (len(self.dataset)-1):
+        if (self.curr_i * self.batch_size) >= len(self.dataset):
             self.reset()
             raise StopIteration
         else:
@@ -50,7 +50,7 @@ class CustomDataLoader(object):
                                                                                  for chunk in batch_chunks)
             dl_get_batch1 = time.time()
             print("time for get batch: {}".format(dl_get_batch1 - dl_get_batch0))
-            self.curr_i = self.curr_i + self.batch_size
+            self.curr_i = self.curr_i + 1
             dl_collate0 = time.time()
             batch_data = [item for chunk in batch_data for item in chunk]
             batch_data_dict = {"image": torch.stack([data['image'] for data in batch_data], 0),
