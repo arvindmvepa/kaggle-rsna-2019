@@ -5,13 +5,13 @@ from torch.utils.data._utils.collate import default_collate
 import time
 import random
 
-dataset_ = None
+stuff = dict()
+
 def get_ds_data(chunk):
-    global dataset_
     output = []
     chunk_fetch_beg = time.time()
     for x in chunk:
-        output.append(dataset_[x])
+        output.append(stuff["dataset"][x])
     chunk_fetch_end = time.time()
     print("time fetch chunk: {}".format(chunk_fetch_end - chunk_fetch_beg))
     return output
@@ -22,8 +22,7 @@ class CustomDataLoader(object):
     def __init__(self, dataset, batch_size = 1, shuffle = False, num_workers = None, backend='loky', *args,
                  **kwargs):
         super(CustomDataLoader, self).__init__()
-        global dataset_
-        dataset_ = dataset
+        stuff["dataset"] = dataset
         self.dataset = dataset
         self.shuffle = shuffle
         self.batcher = list(self.dataset.ids.keys())
