@@ -1,9 +1,8 @@
 from __future__ import absolute_import, print_function
 
 from joblib import Parallel, delayed
-#from torch.utils.data._utils.collate import default_collate
+from torch.utils.data._utils.collate import default_collate
 import time
-import torch
 import random
 
 
@@ -50,13 +49,12 @@ class CustomDataLoader(object):
             self.curr_i = self.curr_i + 1
             dl_collate0 = time.time()
             batch_data = [item for chunk in batch_data for item in chunk]
-            batch_data_dict = {"image": torch.stack([data['image'] for data in batch_data], 0),
-                               "target": torch.stack([data['target'] for data in batch_data], 0)}
+            batch_data = default_collate(batch_data)
             dl_collate1 = time.time()
             print("time for collate: {}".format(dl_collate1 - dl_collate0))
             dl_next1 = time.time()
             print("time for next: {}".format(dl_next1 - dl_next0))
-            return batch_data_dict
+            return batch_data
 
     def reset(self):
         self.curr_i = 0
