@@ -24,7 +24,7 @@ def run_batch(i, batch_size, train_dataset, beg):
 def test(h='lambda2', ds='rsna2019-stage1',
          batch_size=32, shuffle=True, pin_memory=False, small=True, N = 15, use_dataloader=True, use_jdataloader=False,
          use_joblib=False,
-         joblib_backend='loky',
+         joblib_backend='multiprocessing',
          num_workers=0,
          use_transforms=True,
          limit=None):
