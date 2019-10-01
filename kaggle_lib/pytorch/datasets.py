@@ -91,7 +91,7 @@ class RSNA2019Dataset(VisionDataset):
             output = self.preprocessing(**output)
 
         output['image_id'] = image_row['ImageId']
-        output['index'] = list(image_row.index.astype(int))[0]
+        output['index'] = list(image_row.index)[0]
         if target is not None:
             output['target'] = target
 
