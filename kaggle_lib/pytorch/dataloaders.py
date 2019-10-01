@@ -7,6 +7,7 @@ import random
 
 dataset_ = None
 def get_ds_data(chunk):
+    global dataset_
     output = []
     chunk_fetch_beg = time.time()
     for x in chunk:
