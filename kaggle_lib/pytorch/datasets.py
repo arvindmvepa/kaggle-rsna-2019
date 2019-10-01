@@ -77,7 +77,7 @@ class RSNA2019Dataset(VisionDataset):
         # self.row = data.loc[self.id].to_dict()
         # self.path = self.row['fullpath']
 
-        self.data = data.loc[list(self.ids.values())].T.to_dict()
+        self.data = data.loc[list(self.ids.values())]
 
         self.rev_ids = {v: k for k, v in self.ids.items()}
         self.timers['init/setup_img_ids'].toc()
