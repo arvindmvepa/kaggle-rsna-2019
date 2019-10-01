@@ -42,9 +42,8 @@ class RSNA2019Dataset(VisionDataset):
                  class_order=('sdh', 'sah', 'ivh', 'iph', 'edh', 'any'), limit=None, **filter_params):
         super(RSNA2019Dataset, self).__init__(root, transforms, transform, target_transform)
         self.csv_file = csv_file
-
         # just to find dataset size
-        data = pd.read_csv(self.dataset.get_csv_file()).set_index('ImageId')
+        data = pd.read_csv(csv_file).set_index('ImageId')
         img_ids = img_ids or data.index.tolist()
         if limit:
             img_ids = img_ids[:limit]
