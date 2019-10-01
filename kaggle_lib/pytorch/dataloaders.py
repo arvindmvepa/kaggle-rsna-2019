@@ -23,7 +23,7 @@ class CustomDataLoader(object):
         super(CustomDataLoader, self).__init__()
         self.dataset = dataset
         self.shuffle = shuffle
-        self.batcher = list(self.dataset.ids.keys())
+        self.batcher = list(range(len(dataset)))
         self.batch_size = batch_size
         self.num_workers = num_workers
         self.chunk_size = self.batch_size // self.num_workers
