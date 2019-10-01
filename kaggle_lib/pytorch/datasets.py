@@ -172,7 +172,7 @@ class RSNA2019Dataset(VisionDataset):
             for name, t in self.timers.items():
                 print(name, t.average_time_str, t.total_time_str)
 
-        return output['image']
+        return output
 
     def __len__(self):
         return self._num_images
