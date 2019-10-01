@@ -50,7 +50,7 @@ class RSNA2019Dataset(VisionDataset):
         assert all(c in self.label_map for c in class_order), "bad class order"
         self.class_order = class_order
 
-        img_ids = img_ids or self.data.index.tolist()
+        img_ids = img_ids or data.index.tolist()
         if limit:
             random.shuffle(img_ids)
             img_ids = img_ids[:limit]
