@@ -8,7 +8,6 @@ from joblib import Parallel, delayed
 
 import albumentations as A
 import json
-from kaggle_lib.pytorch.utils import Timer
 
 def run_batch(i, batch_size, train_dataset):
     nimages = len(train_dataset)
@@ -58,15 +57,11 @@ def test(h='lambda2', ds='rsna2019-stage1',
                                 limit=limit)
 
     import tqdm
-    timer = Timer()
-    timer.tic()
     if use_dataloader:
         dl = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
                         pin_memory=pin_memory)
         tbar = tqdm.tqdm(dl, desc=h + '-' + ds + '-withloader-len{}-nworkers{}'.format(len(train_dataset), num_workers))
         for i, x in enumerate(tbar):
-            s = ', '.join('{}=avg:{},t:{}'.format(name, t.average_time_str, t.total_time_str) for name, t in
-                          dl.dataset.timers.items())
             print("index: {}".format(i))
             print("time string: {}".format(s))
             tbar.set_postfix_str(s)
@@ -78,8 +73,6 @@ def test(h='lambda2', ds='rsna2019-stage1',
                               pin_memory=pin_memory)
         tbar = tqdm.tqdm(dl, desc=h + '-' + ds + '-withloader-len{}-nworkers{}'.format(len(train_dataset), num_workers))
         for i, x in enumerate(tbar):
-            s = ', '.join('{}=avg:{},t:{}'.format(name, t.average_time_str, t.total_time_str) for name, t in
-                          dl.dataset.timers.items())
             print("index: {}".format(i))
             print("time string: {}".format(s))
             tbar.set_postfix_str(s)
