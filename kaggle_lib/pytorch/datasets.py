@@ -44,45 +44,21 @@ class RSNA2019Dataset(VisionDataset):
                  limit=None,
                  **filter_params):
 
-        self.timers = defaultdict(Timer)
-        self.debug = debug
-
-        self.timers['init/super'].tic()
         super(RSNA2019Dataset, self).__init__(root, transforms, transform, target_transform)
-        self.timers['init/super'].toc()
 
-        self.timers['init/read_csv'].tic()
-        data = pd.read_csv(csv_file).set_index('ImageId')
+        self.data = pd.read_csv(csv_file).set_index('ImageId')
 
-        data['fullpath'] = self.root + "/" + data['filepath']
-
-        self.timers['int/read_csv'].toc()
-
-        # assert all(c in self.label_map for c in class_order), "bad class order"
+        assert all(c in self.label_map for c in class_order), "bad class order"
         self.class_order = class_order
 
-        self.timers['init/setup_img_ids'].tic()
-        img_ids = img_ids or data.index.tolist()
+        img_ids = img_ids or self.data.index.tolist()
         if limit:
+            print("limit: {}".format(limit))
             random.shuffle(img_ids)
             img_ids = img_ids[:limit]
         img_ids = self.apply_filter(img_ids, **filter_params)
         self.ids = {i: imgid for i, imgid in enumerate(img_ids)}
-
-        self._num_images = len(self.ids)
-
-        # id = list(self.ids.values())
-        # random.shuffle(id)
-        # self.id = id[0]
-        # self.row = data.loc[self.id].to_dict()
-        # self.path = self.row['fullpath']
-
-        self.data = data.loc[list(self.ids.values())]
-
         self.rev_ids = {v: k for k, v in self.ids.items()}
-        self.timers['init/setup_img_ids'].toc()
-
-        self.timers['init/finish'].tic()
         self.transforms_are_albumentation = isinstance(self.transforms, BaseCompose)
         self.convert_rgb = convert_rgb
         self.preprocessing = preprocessing
@@ -91,13 +67,6 @@ class RSNA2019Dataset(VisionDataset):
 
         self.image_ext = reader
         self.read_image = readers[reader]
-        self.timers['init/finish'].toc()
-
-        if self.debug:
-            for name, t in self.timers.items():
-                print(name, t.average_time_str)
-
-        self.timers = defaultdict(Timer)
 
     def apply_filter(self, img_ids, **filter_params):
         # place holder for now
@@ -148,4 +117,4 @@ class RSNA2019Dataset(VisionDataset):
         return output
 
     def __len__(self):
-        return self._num_images
+        return len(self.ids)
