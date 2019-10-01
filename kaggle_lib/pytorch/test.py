@@ -5,6 +5,7 @@ from kaggle_lib.pytorch.dataloaders import CustomDataLoader
 from kaggle_lib.pytorch.get_model import get_model
 from kaggle_lib.pytorch.augmentation import get_preprocessing
 from joblib import Parallel, delayed
+import time
 
 import albumentations as A
 import json
@@ -57,6 +58,7 @@ def test(h='lambda2', ds='rsna2019-stage1',
                                 limit=limit)
 
     import tqdm
+    beg = time.time()
     if use_dataloader:
         dl = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
                         pin_memory=pin_memory)
@@ -95,13 +97,10 @@ def test(h='lambda2', ds='rsna2019-stage1',
             batch = batcher[i*batch_size:(i + 1)*batch_size]
             for x in batch:
                 train_dataset[x]
-            s = ', '.join('{}=avg:{},t:{}'.format(name, t.average_time_str, t.total_time_str) for name, t in
-                          train_dataset.timers.items())
             tbar.set_postfix_str(s)
         tbar.close()
-    timer.toc()
-
-    print("Total Time: {}".format(timer.total_time_str))
+    end = time.time()
+    print("Total Time: {}".format(end-beg))
 
 
 for limit in [674258, 168564, 42141, 10535, 2633]:
