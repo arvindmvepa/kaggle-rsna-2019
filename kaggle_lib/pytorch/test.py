@@ -88,7 +88,7 @@ def test(h='lambda2', ds='rsna2019-stage1',
     elif use_joblib:
         tbar = tqdm.tqdm(list(range(N)), desc=h + '-' + ds + '-joblib-len{}-nworkers{}'.format(len(train_dataset),
                                                                                                    num_workers))
-        Parallel(n_jobs=num_workers, backend=joblib_backend)(delayed(run_batch)(i, batch_size, train_dataset, beg)
+        Parallel(n_jobs=num_workers, backend=joblib_backend, verbose=51)(delayed(run_batch)(i, batch_size, train_dataset, beg)
                                                              for i in tbar)
         tbar.close()
 
@@ -105,6 +105,7 @@ def test(h='lambda2', ds='rsna2019-stage1',
     end = time.time()
     print("Total Time: {}".format(end-beg))
 
+"""
 for limit in [674258]:
     for batch_size, num_workers in [(128,4), (256,8)]:
         test(use_dataloader=False, use_jdataloader=True, use_joblib=False, joblib_backend='multiprocessing',
@@ -117,8 +118,9 @@ for limit in [674258, 2633]:
     test(use_dataloader=True, small=False, N=10, limit=limit, num_workers=8)
     print()
     print()
+"""
 
-for limit in [674258, 2633]:
+for limit in [674258, 2633, 479, None]:
 #   for limit in [479, None]:
     test(use_dataloader=False, use_joblib=True, small=False, N=10, limit=limit, num_workers=8)
     print()
