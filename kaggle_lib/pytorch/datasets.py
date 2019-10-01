@@ -38,11 +38,18 @@ class RSNA2019Dataset(VisionDataset):
     }
 
     def __init__(self, root, csv_file, transform=None, target_transform=None, transforms=None,
-                 convert_rgb=True, preprocessing=None, reader='h5',
-                 class_order=('sdh', 'sah', 'ivh', 'iph', 'edh', 'any'), *args,
-                 **kwargs):
+                 convert_rgb=True, preprocessing=None, reader='h5', img_ids=None,
+                 class_order=('sdh', 'sah', 'ivh', 'iph', 'edh', 'any'), limit=None, **filter_params):
         super(RSNA2019Dataset, self).__init__(root, transforms, transform, target_transform)
         self.csv_file = csv_file
+
+        # just to find dataset size
+        data = pd.read_csv(self.dataset.get_csv_file()).set_index('ImageId')
+        img_ids = img_ids or data.index.tolist()
+        if limit:
+            img_ids = img_ids[:limit]
+        img_ids = self.apply_filter(img_ids, **filter_params)
+        self._len = len(img_ids)
 
         assert all(c in self.label_map for c in class_order), "bad class order"
         self.class_order = class_order
@@ -91,4 +98,4 @@ class RSNA2019Dataset(VisionDataset):
         return self.csv_file
 
     def __len__(self):
-        return len(self.data.index)
+        return self._len

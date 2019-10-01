@@ -26,6 +26,7 @@ class CustomDataLoader(object):
                  **filter_params):
         super(CustomDataLoader, self).__init__()
         self.dataset = dataset
+        # keep data in dataloader object to reduce size of memory copies
         data = pd.read_csv(self.dataset.get_csv_file()).set_index('ImageId')
         img_ids = img_ids or data.index.tolist()
         if limit:
@@ -84,4 +85,4 @@ class CustomDataLoader(object):
             random.shuffle(self.batcher)
 
     def __len__(self):
-        return len(self.dataset) // self.batch_size
+        return len(self.data) // self.batch_size
