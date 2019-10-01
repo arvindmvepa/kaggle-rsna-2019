@@ -10,6 +10,7 @@ import random
 def get_ds_data(chunk, dataset):
     output = []
     for x in chunk:
+        print('dataset index: {}'.format(x))
         output.append(dataset[x])
     return output
 
@@ -22,6 +23,7 @@ class CustomDataLoader(object):
         self.dataset = dataset
         self.shuffle = shuffle
         self.batcher = list(self.dataset.ids.keys())
+        print("dataset ids first {}, last {}".format(self.batcher[0], self.batcher[len(self.batcher)-1]))
         self.batch_size = batch_size
         self.reset()
 
