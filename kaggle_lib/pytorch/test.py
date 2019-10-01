@@ -98,9 +98,9 @@ def test(h='lambda2', ds='rsna2019-stage1',
     print("Total Time: {}".format(timer.total_time_str))
 
 #slow
-#for limit in [674258, 168564, 42141, 10535, 2633]:
-#for limit in [479, None]:
-for limit in [10000, 10000, 10000]:
+for limit in [674258, 168564, 42141, 10535, 2633]:
+    #for limit in [479, None]:
+    #for limit in [10000, 10000, 10000]:
     test(use_dataloader=False, use_joblib=True, joblib_backend='multiprocessing', small=False, N=10, limit=limit,
          num_workers=4)
     print()
