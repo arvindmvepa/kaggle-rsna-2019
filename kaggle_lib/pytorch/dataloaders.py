@@ -45,6 +45,7 @@ class CustomDataLoader(object):
             batch_indices = self.batcher[self.curr_i * self.batch_size:(self.curr_i + 1) * self.batch_size]
             batch_chunks = [batch_indices[j*self.chunk_size:(j+1)*self.chunk_size] for j in range(self.num_workers)]
             dl_get_batch0 = time.time()
+            print("batch_chunks: {}".format(batch_chunks))
             batch_data = Parallel(n_jobs=self.num_workers, backend=self.backend)(delayed(get_ds_data)(chunk, self.dataset)
                                                                                  for chunk in batch_chunks)
             dl_get_batch1 = time.time()

@@ -108,8 +108,6 @@ class RSNA2019Dataset(VisionDataset):
         if target is not None:
             output['target'] = target
 
-        print("index: {}, img shape: {}".format(index, output["image"]))
-
         return output
 
     def __len__(self):
