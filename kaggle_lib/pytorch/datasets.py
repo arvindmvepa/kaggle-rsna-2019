@@ -62,6 +62,8 @@ class RSNA2019Dataset(VisionDataset):
         self.preprocessing = preprocessing
 
         self.data = self.data.loc[list(self.ids.values())]
+        print(self.data.columns.values)
+        self.data = self.data[['filepath']]
 
         assert reader in readers, 'bad reader type'
 
