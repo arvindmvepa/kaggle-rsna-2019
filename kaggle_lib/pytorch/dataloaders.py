@@ -5,12 +5,12 @@ from torch.utils.data._utils.collate import default_collate
 import time
 import random
 
-
-def get_ds_data(chunk, dataset):
+dataset_ = None
+def get_ds_data(chunk):
     output = []
     chunk_fetch_beg = time.time()
     for x in chunk:
-        output.append(dataset[x])
+        output.append(dataset_[x])
     chunk_fetch_end = time.time()
     print("time fetch chunk: {}".format(chunk_fetch_end - chunk_fetch_beg))
     return output
@@ -21,6 +21,8 @@ class CustomDataLoader(object):
     def __init__(self, dataset, batch_size = 1, shuffle = False, num_workers = None, backend='loky', *args,
                  **kwargs):
         super(CustomDataLoader, self).__init__()
+        global dataset_
+        dataset_ = dataset
         self.dataset = dataset
         self.shuffle = shuffle
         self.batcher = list(self.dataset.ids.keys())
@@ -45,7 +47,7 @@ class CustomDataLoader(object):
             batch_indices = self.batcher[self.curr_i * self.batch_size:(self.curr_i + 1) * self.batch_size]
             batch_chunks = [batch_indices[j*self.chunk_size:(j+1)*self.chunk_size] for j in range(self.num_workers)]
             dl_get_batch0 = time.time()
-            batch_data = Parallel(n_jobs=self.num_workers, backend=self.backend)(delayed(get_ds_data)(chunk, self.dataset)
+            batch_data = Parallel(n_jobs=self.num_workers, backend=self.backend)(delayed(get_ds_data)(chunk)
                                                                                  for chunk in batch_chunks)
             dl_get_batch1 = time.time()
             print("time for get batch: {}".format(dl_get_batch1 - dl_get_batch0))
