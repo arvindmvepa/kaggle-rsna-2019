@@ -25,12 +25,10 @@ class CustomDataLoader(object):
         self.batcher = list(self.dataset.ids.keys())
         print("dataset ids first {}, last {}".format(self.batcher[0], self.batcher[len(self.batcher)-1]))
         self.batch_size = batch_size
-        self.chunk_size = self.batch_size // self.num_workers
-        self.reset()
-
         self.num_workers = num_workers
+        self.chunk_size = self.batch_size // self.num_workers
         self.backend = backend
-
+        self.reset()
 
     def __iter__(self):
         return self
