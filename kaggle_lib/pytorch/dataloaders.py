@@ -2,6 +2,7 @@ from __future__ import absolute_import, print_function
 
 from joblib import Parallel, delayed
 #from torch.utils.data._utils.collate import default_collate
+import time
 import torch
 import random
 
@@ -27,16 +28,26 @@ class CustomDataLoader(object):
     def __next__(self):
         """
         """
+        dl_next0 = time.time()
+
         if self.curr_i >= len(self.dataset):
             self.reset()
             raise StopIteration
         else:
             batch = self.batcher[self.curr_i * self.batch_size:(self.curr_i + 1) * self.batch_size]
+            dl_get_batch0 = time.time()
             batch_data = Parallel(n_jobs=self.num_workers, backend=self.backend)(delayed(self.dataset.__getitem__)(x)
                                                                                  for x in batch)
+            dl_get_batch1 = time.time()
+            print("time for get batch: {}".format(dl_get_batch1 - dl_get_batch0))
             self.curr_i = self.curr_i + self.batch_size
+            dl_collate0 = time.time()
             batch_data_dict = {"image": torch.stack([data['image'] for data in batch_data], 0),
                                "target": torch.stack([data['target'] for data in batch_data], 0)}
+            dl_collate1 = time.time()
+            print("time for collate: {}".format(dl_collate1 - dl_collate0))
+            dl_next1 = time.time()
+            print("time for next: {}".format(dl_next1 - dl_next0))
             return batch_data_dict
 
     def reset(self):
