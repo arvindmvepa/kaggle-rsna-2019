@@ -87,8 +87,8 @@ def test(h='lambda2', ds='rsna2019-stage1',
         tbar.close()
     elif use_joblib:
         tbar = tqdm.tqdm(list(range(N)), desc=h + '-' + ds + '-joblib-len{}-nworkers{}'.format(len(train_dataset),
-                                                                                                   num_workers, beg))
-        Parallel(n_jobs=num_workers, backend=joblib_backend)(delayed(run_batch)(i, batch_size, train_dataset)
+                                                                                                   num_workers))
+        Parallel(n_jobs=num_workers, backend=joblib_backend)(delayed(run_batch)(i, batch_size, train_dataset, beg)
                                                              for i in tbar)
         tbar.close()
 
