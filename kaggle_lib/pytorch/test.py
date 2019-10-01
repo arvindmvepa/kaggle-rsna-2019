@@ -66,6 +66,8 @@ def test(h='lambda2', ds='rsna2019-stage1',
     if use_dataloader:
         dl = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
                         pin_memory=pin_memory)
+        cur = time.time()
+        print('initialize dataloader: {}'.format(cur-beg))
         tbar = tqdm.tqdm(dl, desc=h + '-' + ds + '-withloader-len{}-nworkers{}-bs{}'.format(len(train_dataset), num_workers, batch_size))
         for i, x in enumerate(tbar):
             print("index: {}".format(i))
@@ -77,6 +79,8 @@ def test(h='lambda2', ds='rsna2019-stage1',
     elif use_jdataloader:
         dl = CustomDataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
                               pin_memory=pin_memory, backend=joblib_backend)
+        cur = time.time()
+        print('initialize dataloader: {}'.format(cur-beg))
         tbar = tqdm.tqdm(dl, desc=h + '-' + ds + '-withjloader-len{}-nworkers{}-bs{}'.format(len(train_dataset), num_workers, batch_size))
         for i, x in enumerate(tbar):
             print("index: {}".format(i))
