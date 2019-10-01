@@ -62,6 +62,10 @@ class RSNA2019Dataset(VisionDataset):
         self.image_ext = reader
         self.read_image = readers[reader]
 
+    def apply_filter(self, img_ids, **filter_params):
+        # place holder for now
+        return img_ids
+
     def __getitem__(self, image_row):
         """
         """
