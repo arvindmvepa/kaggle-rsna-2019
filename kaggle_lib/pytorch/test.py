@@ -118,8 +118,10 @@ for limit in [2500, 2500, 2500, 2500, 2500]:
     print()
 """
 
-for num_workers,limit in [(1,10000), (1,10000), (2,10000), (2,10000), (4,10000), (4,10000)]:
-    test(use_jdataloader=True, use_dataloader=False, use_joblib=False, small=False, N=10, limit=limit, num_workers=num_workers)
+for num_workers, batch_size, limit in [(1,128,100000), (1,128,100000), (2,128,100000), (2,128,100000),
+                                       (4,128,100000), (4,128,100000)]:
+    test(use_jdataloader=True, use_dataloader=False, use_joblib=False, small=False, N=10, limit=limit,
+         batch_size=batch_size, num_workers=num_workers)
     print()
     print()
 
