@@ -17,6 +17,7 @@ from tqdm import tqdm
 
 from .augmentation import make_augmentation, make_transforms, get_preprocessing
 from .datacatalog import get_dataset, dataset_map, datacatalog, get_csv_file
+from .dataloaders import CustomDataLoader
 from .get_model import get_model
 from .loss import Criterion
 from .lr_scheduler import get_scheduler
@@ -270,10 +271,10 @@ class ClassifierTrainer(object):
         logger.info('VALIDATION')
         logger.info(str(val_dataset))
 
-        self.train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True,
+        self.train_loader = CustomDataLoader(train_dataset, batch_size=batch_size, shuffle=True,
                                        num_workers=num_workers)
         if val_dataset is not None:
-            self.val_loader = DataLoader(val_dataset, batch_size=8, shuffle=False, num_workers=4, drop_last=False)
+            self.val_loader = CustomDataLoader(val_dataset, batch_size=8, shuffle=False, num_workers=4, drop_last=False)
         else:
             self.val_loader = None
 
