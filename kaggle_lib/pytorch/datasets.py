@@ -52,7 +52,6 @@ class RSNA2019Dataset(VisionDataset):
 
         img_ids = img_ids or self.data.index.tolist()
         if limit:
-            print("limit: {}".format(limit))
             random.shuffle(img_ids)
             img_ids = img_ids[:limit]
         img_ids = self.apply_filter(img_ids, **filter_params)
