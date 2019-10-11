@@ -205,6 +205,7 @@ class Ensembler(object):
     def load_model(checkpoint):
         model_params = checkpoint['model_params']
         model_params.pop('weights', None)
+        model_params.pop('final_output', None)
         model, preprocessing = get_model(**model_params)
         model.load_state_dict(checkpoint['state_dict'])
         transforms = A.from_dict(checkpoint['test_transforms'])
