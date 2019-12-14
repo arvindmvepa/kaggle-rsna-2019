@@ -47,8 +47,7 @@ class ClassifierTrainer(object):
                        'sgd': torch.optim.SGD,
                        'sparceadam': torch.optim.SparseAdam,
                        'radam': RAdam,
-                       'ralamb': Ralamb,
-                       'lahead': Lookahead
+                       'ralamb': Ralamb
                        }
 
     section_defaults = {
