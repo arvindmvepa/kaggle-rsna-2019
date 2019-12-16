@@ -25,7 +25,7 @@ from .get_model import get_model
 from .loss import Criterion
 from .lr_scheduler import get_scheduler
 from .metrics import RSNA2019Metric
-from .optimizers import RAdam, Ralamb, Lookahead
+from .optimizers import RAdam, Ralamb, Lookahead, Lamb, Novograd
 from .saver import Saver
 from .summary import TensorboardSummary
 from .sync_batchnorm import convert_model, patch_replication_callback
@@ -47,7 +47,9 @@ class ClassifierTrainer(object):
                        'sgd': torch.optim.SGD,
                        'sparceadam': torch.optim.SparseAdam,
                        'radam': RAdam,
-                       'ralamb': Ralamb
+                       'ralamb': Ralamb,
+                       'lamb': Lamb,
+                       'novograd': Novograd
                        }
 
     section_defaults = {
